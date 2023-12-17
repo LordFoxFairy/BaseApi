@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.foxfairy.base.api.core.common.HttpResponse;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class RequestHandler {
      * @return 返回请求结果
      */
     @ResponseBody
-    public Object invoke(HttpServletRequest request, HttpServletResponse response,
+    public HttpResponse<Object> invoke(HttpServletRequest request, HttpServletResponse response,
                          @PathVariable(required = false) Map<String, Object> pathVariables,
                          @RequestHeader(required = false) Map<String, Object> defaultHeaders,
                          @RequestParam(required = false) Map<String, Object> parameters) {
@@ -46,6 +47,7 @@ public class RequestHandler {
         }
 
         HttpSession session = request.getSession();
+
         // 获取 Session 属性值
         Enumeration<String> attributeNames = session.getAttributeNames();
         while (attributeNames.hasMoreElements()) {
@@ -56,7 +58,10 @@ public class RequestHandler {
 
         String requestBody = this.getRequestBody(request);
 
-        return "香菜";
+        String result = "香菜";
+        HttpResponse<Object> content = HttpResponse.success(result);
+
+        return content;
     }
 
     /**
