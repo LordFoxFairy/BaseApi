@@ -1,4 +1,4 @@
-package org.foxfairy.base.api.core.datasource;
+package org.foxfairy.base.api.core.module;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -28,11 +28,12 @@ public class SqlExecutor {
     @Resource
     MyBatisSqlConverter myBatisSqlConverter;
 
-    public void executeQuery(String key, String sql, Map<String, Object> params) throws SQLException{
+    public String executeQuery(String key, String sql, Map<String, Object> params) throws SQLException{
         String formatSql = myBatisSqlConverter.conversionSql(sql, params);
         log.info("当前执行SQL为：{}", formatSql);
         String result = this.executeQuery(key, formatSql);
         log.info("查询执行结果：{}", result);
+        return result;
     }
 
     /**

@@ -1,4 +1,4 @@
-package org.foxfairy.base.api.core.datasource;
+package org.foxfairy.base.api.core.module;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentMap;
 @Slf4j
 public class DynamicDataSource {
 
-    private static final ConcurrentMap<String, DataSourceMeta> DATA_SOURCE_META = new ConcurrentHashMap<>();
+    public static final ConcurrentMap<String, DataSourceMeta> DATA_SOURCE_META = new ConcurrentHashMap<>();
 
     public void addOrUpdateDataSource(DataSourceProperties dataSourceProperties) {
         DataSourceMeta dataSourceMeta = DATA_SOURCE_META.get(dataSourceProperties.getDataSourceKey());

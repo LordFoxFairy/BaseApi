@@ -1,6 +1,5 @@
-package org.foxfairy.base.api.core.datasource;
+package org.foxfairy.base.api.core.module;
 
-import cn.hutool.core.util.NumberUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.parsing.XNode;

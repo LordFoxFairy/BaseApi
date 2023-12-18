@@ -1,6 +1,7 @@
 package org.foxfairy.base.api.core.common;
 
-import lombok.*;
+
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
