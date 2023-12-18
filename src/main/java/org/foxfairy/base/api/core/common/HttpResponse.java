@@ -1,41 +1,69 @@
 package org.foxfairy.base.api.core.common;
 
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class HttpResponse<T> {
 
     private final HttpStatus status;
     private final String message;
     private final T data;
+    private final Integer code;
 
     private HttpResponse(HttpStatus status, String message, T data) {
         this.status = status;
         this.message = message;
         this.data = data;
+        this.code = status.value();
+    }
+
+    public static <T> HttpResponse<T> ok(HttpStatus status, T data) {
+        return HttpResponse.success(status, data);
+    }
+
+    public static <T> HttpResponse<T> ok(T data) {
+        return HttpResponse.success(data);
+    }
+
+    public static <T> HttpResponse<T> ok200(T data) {
+        return HttpResponse.success(data);
     }
 
     public static <T> HttpResponse<T> success(T data) {
-        return new HttpResponse<>(HttpStatus.OK, "Success", data);
+        return HttpResponse.success(HttpStatus.OK, data);
     }
 
-    public static <T> HttpResponse<T> success(T data, HttpStatus status) {
-        return new HttpResponse<>(status, "Success", data);
+    public static <T> HttpResponse<T> success(HttpStatus status, T data) {
+        return HttpResponse.template(status, data);
+    }
+
+    public static <T> HttpResponse<T> success(T data, String message) {
+        return HttpResponse.template(HttpStatus.OK, data, message);
+    }
+
+    public static <T> HttpResponse<T> success(HttpStatus status, T data, String message) {
+        return HttpResponse.template(HttpStatus.OK, data, message);
+    }
+
+    public static <T> HttpResponse<T> template(HttpStatus status, T data) {
+        return new HttpResponse<>(status, status.getReasonPhrase(), data);
+    }
+
+    public static <T> HttpResponse<T> template(HttpStatus status, T data, String message) {
+        return new HttpResponse<>(status, message, data);
     }
 
     public static <T> HttpResponse<T> error(HttpStatus status, String message) {
         return new HttpResponse<>(status, message, null);
     }
 
-    public HttpStatus getStatus() {
-        return status;
+    public static <T> HttpResponse<T> error404(String message) {
+        return new HttpResponse<>(HttpStatus.NOT_FOUND, message, null);
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public T getData() {
-        return data;
+    public static <T> HttpResponse<T> error500(String message) {
+        return new HttpResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, message, null);
     }
 }
 

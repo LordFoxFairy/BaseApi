@@ -16,14 +16,14 @@ public class DynamicController {
     private DynamicUrlRegistry dynamicUrlService;
 
     @GetMapping("/register")
-    public HttpResponse<Object> registerDynamicUrl(@Nonnull @Param("url") String url) throws NoSuchMethodException {
+    public HttpResponse<Object> registerDynamicUrl(@Nonnull @Param("url") String url) {
         // 例如，注册动态 URL "/dynamic" 对应的方法为 "handleDynamicRequest"
         dynamicUrlService.registerDynamicUrl(url);
         return HttpResponse.success("Dynamic URL register successfully!");
     }
 
     @GetMapping("/remove")
-    public HttpResponse<Object> removeDynamicUrl(@Nonnull @Param("url") String url) throws NoSuchMethodException {
+    public HttpResponse<Object> removeDynamicUrl(@Nonnull @Param("url") String url) {
         dynamicUrlService.removeDynamicUrl(url);
         return HttpResponse.success("Dynamic URL removed successfully!");
     }
