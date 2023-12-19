@@ -1,8 +1,10 @@
-package org.foxfairy.base.api.core.exceptions;
+package org.foxfairy.base.api.core.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.foxfairy.base.api.core.common.HttpResponse;
 import org.foxfairy.base.api.core.common.ResponseEnum;
+import org.foxfairy.base.api.core.exceptions.BaseException;
+import org.foxfairy.base.api.core.exceptions.BusinessException;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
