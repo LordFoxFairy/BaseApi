@@ -1,14 +1,17 @@
 package org.foxfairy.base.api.core.common;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
 public class HttpResponse<T> {
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final HttpStatus status;
     private final String message;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final T data;
     private final Integer code;
 

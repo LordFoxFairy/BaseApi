@@ -20,8 +20,8 @@ public class GlobalException {
     @ExceptionHandler(ServerException.class)
     public HttpResponse<BaseException>  businessExceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception e)
     {
-        log.error("[GlobalExceptionHandler][businessExceptionHandler] exception",e);
-        return HttpResponse.error(ResponseEnum.SERVER_ERROR.getCode(), ResponseEnum.SERVER_ERROR.getMessage());
+        log.error("[GlobalException][businessExceptionHandler] exception",e);
+        return HttpResponse.error(ResponseEnum.SERVER_ERROR.getCode(), e.getMessage());
     }
 
     /**
@@ -30,7 +30,7 @@ public class GlobalException {
     @ExceptionHandler(Exception.class)
     public HttpResponse<BaseException> exceptionHandler(HttpServletRequest request,HttpServletResponse response,Exception e)
     {
-        log.error("[GlobalExceptionHandler][exceptionHandler] exception",e);
-        return HttpResponse.error(ResponseEnum.SERVER_ERROR.getCode(), ResponseEnum.SERVER_ERROR.getMessage());
+        log.error("[GlobalException][exceptionHandler] exception",e);
+        return HttpResponse.error(ResponseEnum.SERVER_ERROR.getCode(), e.getMessage());
     }
 }
