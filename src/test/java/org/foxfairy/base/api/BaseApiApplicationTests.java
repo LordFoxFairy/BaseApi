@@ -2,10 +2,9 @@ package org.foxfairy.base.api;
 
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
-import org.apache.ibatis.session.SqlSession;
-import org.foxfairy.base.api.core.datasource.DynamicDataSource;
-import org.foxfairy.base.api.core.datasource.MyBatisSqlConverter;
-import org.foxfairy.base.api.core.datasource.SqlExecutor;
+import org.foxfairy.base.api.core.module.DynamicDataSource;
+import org.foxfairy.base.api.core.module.MyBatisSqlConverter;
+import org.foxfairy.base.api.core.module.SqlExecutor;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
