@@ -1,6 +1,6 @@
 package org.foxfairy.base.api.core.handler;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.Cookie;
@@ -9,18 +9,22 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.foxfairy.base.api.core.annotations.Loggable;
 import org.foxfairy.base.api.core.common.HttpResponse;
 import org.foxfairy.base.api.core.module.SqlExecutor;
 import org.springframework.stereotype.Component;
-import com.alibaba.fastjson.JSON;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -138,8 +142,6 @@ public class RequestHandler {
 
     /**
      * 获取request body 字符串
-     * @param request
-     * @return
      */
     private String getRequestBody(HttpServletRequest request) {
         String requestBody = null;
@@ -160,15 +162,13 @@ public class RequestHandler {
 
     /**
      * 将 body 字符串转换为 map
-     * @param request
-     * @return
      */
 
     private HashMap<String, Object> getRequestBodyAsHashMap(HttpServletRequest request) {
         String requestBody = this.getRequestBody(request);
         try {
-            HashMap<String, Object> requestBodyMap = JSON.parseObject(requestBody, new TypeReference<HashMap<String, Object>>(){});
-            return requestBodyMap;
+            return JSON.parseObject(requestBody, new TypeReference<>() {
+            });
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse request body as JSON", e);
         }
