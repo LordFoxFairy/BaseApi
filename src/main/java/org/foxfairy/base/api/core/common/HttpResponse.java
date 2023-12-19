@@ -19,6 +19,13 @@ public class HttpResponse<T> {
         this.code = status.value();
     }
 
+    private HttpResponse(HttpStatus status, String message, T data, Integer code) {
+        this.status = status;
+        this.message = message;
+        this.data = data;
+        this.code = code;
+    }
+
     public static <T> HttpResponse<T> ok(HttpStatus status, T data) {
         return HttpResponse.success(status, data);
     }
@@ -57,6 +64,10 @@ public class HttpResponse<T> {
 
     public static <T> HttpResponse<T> error(HttpStatus status, String message) {
         return new HttpResponse<>(status, message, null);
+    }
+
+    public static <T> HttpResponse<T> error(Integer code, String message) {
+        return new HttpResponse<>(null, message, null, code);
     }
 
     public static <T> HttpResponse<T> error404(String message) {
