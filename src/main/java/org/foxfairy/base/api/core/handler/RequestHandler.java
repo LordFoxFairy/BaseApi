@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.foxfairy.base.api.core.annotations.Loggable;
 import org.foxfairy.base.api.core.common.HttpResponse;
 import org.foxfairy.base.api.core.module.SqlExecutor;
 import org.springframework.stereotype.Component;
@@ -74,10 +75,6 @@ public class RequestHandler {
 
     /**
      * 统一执行
-     *
-     * @param requestBody
-     * @param params
-     * @return
      */
     @SneakyThrows
     public Object handler(HttpServletRequest request, Map<String, Object> requestBody, Map<String, Object> params){
