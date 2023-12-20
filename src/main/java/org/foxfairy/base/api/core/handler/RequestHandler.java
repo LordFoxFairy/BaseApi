@@ -143,6 +143,7 @@ public class RequestHandler {
     /**
      * 获取request body 字符串
      */
+
     private String getRequestBody(HttpServletRequest request) {
         String requestBody = null;
         // 获取请求体
@@ -150,14 +151,10 @@ public class RequestHandler {
             requestBody = new BufferedReader(new InputStreamReader(inputStream))
                     .lines()
                     .collect(Collectors.joining(System.lineSeparator()));
-            log.info("Request Body: " + requestBody);
-
             return requestBody;
         } catch (IOException e) {
-            // 处理 IO 异常E
-            log.error("request body获取异常：{}", e.getMessage());
+            throw new RuntimeException("request body获取异常", e);
         }
-        return requestBody;
     }
 
     /**
