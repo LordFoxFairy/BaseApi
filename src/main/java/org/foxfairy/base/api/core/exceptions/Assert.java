@@ -16,7 +16,7 @@ public interface Assert {
      */
     default void assertNotNull(Object obj) throws BaseException {
         if (obj == null) {
-            throw newException(obj);
+            throw newException((Object) null);
         }
     }
 

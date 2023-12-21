@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.foxfairy.base.api.core.annotations.Loggable;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -19,6 +20,7 @@ public class DynamicDataSource {
 
     public static final ConcurrentMap<String, DataSourceMeta> DATA_SOURCE_META = new ConcurrentHashMap<>();
 
+    @Loggable("#dataSourceProperties")
     public void addOrUpdateDataSource(DataSourceProperties dataSourceProperties) {
         DataSourceMeta dataSourceMeta = DATA_SOURCE_META.get(dataSourceProperties.getDataSourceKey());
 
@@ -39,6 +41,7 @@ public class DynamicDataSource {
         DataSourceSwitcher.switchDataSource(dataSourceProperties.dataSourceKey);
     }
 
+    @Loggable("#key")
     public void removeDataSource(String key) {
         DataSourceSwitcher.removeDataSource(key);
     }
@@ -113,12 +116,10 @@ public class DynamicDataSource {
             CURRENT_DATA_SOURCE_KEY.remove();
         }
 
+        @Loggable("#key")
         public static void switchDataSource(String key) {
             if (DATA_SOURCE_META.containsKey(key)) {
                 CURRENT_DATA_SOURCE_KEY.set(key);
-                log.info("Switched to DataSource: " + key);
-            } else {
-                log.info("DataSource not found: " + key);
             }
         }
 
@@ -127,7 +128,7 @@ public class DynamicDataSource {
             return DATA_SOURCE_META.get(currentKey);
         }
 
-
+        @Loggable("#key")
         public static DataSourceMeta getDataSource(String key) {
             return DATA_SOURCE_META.get(key);
         }

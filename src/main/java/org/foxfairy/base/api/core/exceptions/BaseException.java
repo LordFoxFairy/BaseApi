@@ -10,6 +10,9 @@ public class BaseException extends Throwable {
 
     private final String message;
 
+    /**
+     * 参数
+     */
     private final Object[] args;
 
     private Throwable cause;

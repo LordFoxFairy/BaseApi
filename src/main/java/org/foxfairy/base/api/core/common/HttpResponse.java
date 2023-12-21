@@ -53,10 +53,6 @@ public class HttpResponse<T> {
         return HttpResponse.template(HttpStatus.OK, data, message);
     }
 
-    public static <T> HttpResponse<T> success(HttpStatus status, T data, String message) {
-        return HttpResponse.template(HttpStatus.OK, data, message);
-    }
-
     public static <T> HttpResponse<T> template(HttpStatus status, T data) {
         return new HttpResponse<>(status, status.getReasonPhrase(), data);
     }

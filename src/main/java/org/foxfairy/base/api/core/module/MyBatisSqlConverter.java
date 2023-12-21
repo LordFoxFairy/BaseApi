@@ -1,5 +1,6 @@
 package org.foxfairy.base.api.core.module;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.parsing.XNode;
@@ -65,7 +66,7 @@ public class MyBatisSqlConverter {
                 String placeHolder = mapping.getProperty() ;
                 String[] props = placeHolder.split("\\.");
                 Object obj = objectMap.get(props[0]);
-                JSONObject json = JSONObject.parseObject(JSONObject.toJSONString(obj));
+                JSONObject json = JSON.parseObject(JSONObject.toJSONString(obj));
                 String res = null;
                 if(props.length > 1){
                     for(int i = 1 ; i < props.length ; i++){

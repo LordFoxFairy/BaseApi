@@ -2,17 +2,21 @@ package org.foxfairy.base.api;
 
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
+import org.foxfairy.base.api.core.module.DynamicCodeExecutor;
 import org.foxfairy.base.api.core.module.DynamicDataSource;
 import org.foxfairy.base.api.core.module.MyBatisSqlConverter;
 import org.foxfairy.base.api.core.module.SqlExecutor;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.tools.JavaCompiler;
+import javax.tools.SimpleJavaFileObject;
+import javax.tools.ToolProvider;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 class BaseApiApplicationTests {
@@ -109,6 +113,22 @@ class BaseApiApplicationTests {
                   </where>
                 """;
         System.out.println(myBatisSqlConverter.conversionSql(dynamicSql, map));;
+    }
+
+    @Autowired
+    private DynamicCodeExecutor dynamicCodeExecutor;
+
+    @Test
+    void testExecuteMethod() {
+        String className = "TestClass";
+        String methodName1 = "testMethod1";
+        String code1 = "System.out.println(\"Hello from testMethod1\");";
+
+        String methodName2 = "testMethod2";
+        String code2 = "System.out.println(\"Hello from testMethod2\");";
+
+//        dynamicCodeExecutor.execute(className, methodName1, code1);
+        dynamicCodeExecutor.execute(className, methodName2, code2);
     }
 
 }

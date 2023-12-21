@@ -53,9 +53,7 @@ public class DynamicUrlRegistry {
     @SneakyThrows
     public void reset() {
         // 清除之前设置的所有动态路由
-        for (String url : dynamicMappings.keySet()) {
-            mapping.unregisterMapping(dynamicMappings.get(url).getInfo());
-        }
+        dynamicMappings.keySet().forEach(url -> mapping.unregisterMapping(dynamicMappings.get(url).getInfo()));
 
         // 重新加载新的动态路由
         // 这里可以根据实际需求重新加载新的路由信息
