@@ -1,9 +1,10 @@
-package org.foxfairy.base.api.core.datasource;
+package org.foxfairy.base.api.core.module;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.foxfairy.base.api.core.annotations.Loggable;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -28,11 +29,10 @@ public class SqlExecutor {
     @Resource
     MyBatisSqlConverter myBatisSqlConverter;
 
-    public void executeQuery(String key, String sql, Map<String, Object> params) throws SQLException{
+    @Loggable("#key + ' ' + #sql + ' ' + #params")
+    public String executeQuery(String key, String sql, Map<String, Object> params) throws SQLException{
         String formatSql = myBatisSqlConverter.conversionSql(sql, params);
-        log.info("当前执行SQL为：{}", formatSql);
-        String result = this.executeQuery(key, formatSql);
-        log.info("查询执行结果：{}", result);
+        return this.executeQuery(key, formatSql);
     }
 
     /**

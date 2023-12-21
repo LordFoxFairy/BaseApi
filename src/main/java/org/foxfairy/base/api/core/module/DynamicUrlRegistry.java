@@ -1,22 +1,19 @@
-package org.foxfairy.base.api.core.route;
+package org.foxfairy.base.api.core.module;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.foxfairy.base.api.core.handler.RequestHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +31,7 @@ public class DynamicUrlRegistry {
     public void registerDynamicUrl(String url) {
         RequestMappingInfo info = RequestMappingInfo
                     .paths(url)
-                    .methods(RequestMethod.GET)
+                    .methods(RequestMethod.POST)
                     .build();
 
         Method method =  RequestHandler.class.getDeclaredMethod(
@@ -56,9 +53,7 @@ public class DynamicUrlRegistry {
     @SneakyThrows
     public void reset() {
         // 清除之前设置的所有动态路由
-        for (String url : dynamicMappings.keySet()) {
-            mapping.unregisterMapping(dynamicMappings.get(url).getInfo());
-        }
+        dynamicMappings.keySet().forEach(url -> mapping.unregisterMapping(dynamicMappings.get(url).getInfo()));
 
         // 重新加载新的动态路由
         // 这里可以根据实际需求重新加载新的路由信息
