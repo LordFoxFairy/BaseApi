@@ -28,7 +28,6 @@ public class SqlExecutor {
     private DynamicDataSource dynamicDataSource;
     @Resource
     MyBatisSqlConverter myBatisSqlConverter;
-
     @Loggable("#key + ' ' + #sql + ' ' + #params")
     public String executeQuery(String key, String sql, Map<String, Object> params) throws SQLException{
         String formatSql = myBatisSqlConverter.conversionSql(sql, params);
