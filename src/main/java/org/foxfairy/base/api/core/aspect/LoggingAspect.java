@@ -12,25 +12,22 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Aspect
 @Component
-public class LoggingAspect {
+public class LoggingAspect extends BaseAspect{
 
     @Resource
     private SpelExpressionResolver spelExpressionResolver;
 
     @Around("@annotation(loggable)")
-    public Object logAroundMethodExecution(ProceedingJoinPoint joinPoint, Loggable loggable) throws Throwable {
+    public Object aroundMethodExecution(ProceedingJoinPoint joinPoint, Loggable loggable) throws Throwable {
         // 方法名
         String methodName = joinPoint.getSignature().getName();
         //获取动态参数
         String params = spelExpressionResolver.generateKeyBySpEL(loggable.value(), joinPoint);
-        log.info("获取动态aop参数: {}", params);
-        log.info("执行目标方法: {} ==>>开始......", methodName);
+
+        super.before(methodName, params);
         Object result = joinPoint.proceed();
-        log.info("执行目标方法: {} ==>>结束......", methodName);
-        // 返回通知
-        log.info("目标方法 " + methodName + " 执行结果 " + result);
-        // 后置通知
-        log.info("目标方法 " + methodName + " 结束");
+        super.after(methodName, result);
+
         return result;
     }
 }
