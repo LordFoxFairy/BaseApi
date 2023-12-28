@@ -124,11 +124,15 @@ class BaseApiApplicationTests {
         String methodName1 = "testMethod1";
         String code1 = "System.out.println(\"Hello from testMethod1\");";
 
-        String methodName2 = "testMethod2";
-        String code2 = "System.out.println(\"Hello from testMethod2\");";
+//        String className2 = "TestClass2";
+//        String methodName2 = "testMethod2";
+//        String code2 = "new TestClass().testMethod1();";
 
-//        dynamicCodeExecutor.execute(className, methodName1, code1);
-        dynamicCodeExecutor.execute(className, methodName2, code2);
+        dynamicCodeExecutor.execute(className, methodName1, code1);
+        dynamicCodeExecutor.execute(className, methodName1, code1);
+        dynamicCodeExecutor.execute(className, methodName1, code1);
+        dynamicCodeExecutor.execute(className, methodName1, code1);
+//        dynamicCodeExecutor.execute(className2, methodName2, code2);
     }
 
 }
