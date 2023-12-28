@@ -1,65 +1,72 @@
 package org.foxfairy.base.api.core.module;
 
 import jakarta.annotation.Resource;
-import lombok.Data;
-import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.foxfairy.base.api.core.entity.ClassProperty;
 import org.springframework.stereotype.Component;
 
+import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+@Slf4j
 @Component
 public class DynamicCodeExecutor {
 
-    private final Map<String, Class<?>> compiledClassMap = new ConcurrentHashMap<>();
-    private final Map<String, Class<?>> instanceMap = new ConcurrentHashMap<>();
-
-    private final static String TMP_DIR = "java.io.tmpdir";
-
+    private final ConcurrentMap<String, ClassProperty> compiledClasses = new ConcurrentHashMap<>();
 
     @Resource
     private CodeChecker codeChecker;
-    /**
-     *  动态运行类
-     *  1. 如果 class 不变，则不更新，如果有变动，则更新
-     *  2. 同理如果 class 变动，则伴随的 实例instance 也需要更新
-     * @param className 类名
-     * @param methodName 方法名
-     * @param code 实例代码
-     */
-    public void execute(String className, String methodName, String code) {
+
+    public synchronized void execute(String className, String methodName, String code) {
 
         String sourceCode = generateSourceCode(className, methodName, code);
-        if(codeChecker.isCodeSafe(sourceCode)){
-            return;
+        if(!codeChecker.isCodeSafe(sourceCode)){
+            return ;
         }
 
-        String key = className + "." + methodName;
-        Class<?> clazz = compiledClassMap.get(key);
+        String hashCode = codeChecker.generateHash(sourceCode);
+        ClassProperty classProperty = compiledClasses.get(className);
 
-        if (clazz == null) {
-            clazz = compileAndLoadClass(className, sourceCode);
-            compiledClassMap.put(key, clazz);
-        }
-
-        try {
-            Object instance = clazz.getDeclaredConstructor().newInstance();
+        Object instance;
+        if(Objects.nonNull(classProperty) && hashCode.equals(classProperty.getHashCode()) && Objects.nonNull(classProperty.getInstance())){
+            log.info("当前class已存在，无需重新创建");
+            instance = classProperty.getInstance();
             invokeMethod(instance, methodName);
-        } catch (Exception e) {
-            throw new RuntimeException("Error creating instance or invoking method: " + e.getMessage(), e);
+        }else{
+            log.info("当前class不存在，正在创建中~");
+            Class<?> clazz = compileAndLoadClass(className, sourceCode);
+            try {
+                instance = clazz.getDeclaredConstructor().newInstance();
+                ClassProperty newClassProperty = new ClassProperty();
+                newClassProperty.setClazz(clazz);
+                newClassProperty.setClassName(className);
+                newClassProperty.setHashCode(hashCode);
+                newClassProperty.setInstance(instance);
+                compiledClasses.put(className, newClassProperty);
+
+                invokeMethod(instance, methodName);
+            } catch (Exception e) {
+                throw new RuntimeException("Error creating instance or invoking method: " + e.getMessage(), e);
+            }
         }
+        Class<?> clazz = compiledClasses.get(className).getClazz();
+        String classPath = clazz
+                .getResource(clazz.getSimpleName() + ".class")
+                .getPath().replaceAll("/" + clazz.getSimpleName() + ".class$", "")
+                .replaceAll("^file:", "").replaceAll("%20", " ");
+        log.info("当前class的全局类路径：{}", classPath);
     }
 
     private String generateSourceCode(String className, String methodName, String code) {
+
         return "public class " + className + " {\n" +
                 "    public void " + methodName + "() {\n" +
                 "        " + code + "\n" +
@@ -69,21 +76,24 @@ public class DynamicCodeExecutor {
 
     private Class<?> compileAndLoadClass(String className, String sourceCode) {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 
         // 保存源代码到临时文件
         String fileName = className + ".java";
-        String filePath = System.getProperty(TMP_DIR) + File.separator + fileName;
+        String filePath = System.getProperty("java.io.tmpdir") + File.separator + fileName;
         saveSourceCodeToFile(filePath, sourceCode);
 
         // 编译Java类
+//        int compilationResult = compiler.run(null, null, null, filePath);
         int compilationResult = compiler.run(null, null, null, "-Xlint:-options", filePath);
+
         if (compilationResult != 0) {
             throw new RuntimeException("Compilation failed");
         }
 
         // 使用URLClassLoader加载编译后的类
         try {
-            URLClassLoader classLoader = new URLClassLoader(new URL[]{new File(System.getProperty(TMP_DIR)).toURI().toURL()});
+            URLClassLoader classLoader = new URLClassLoader(new URL[]{new File(System.getProperty("java.io.tmpdir")).toURI().toURL()});
             return Class.forName(className, true, classLoader);
         } catch (ClassNotFoundException | IOException e) {
             throw new RuntimeException("Error loading class " + className, e);
@@ -98,38 +108,11 @@ public class DynamicCodeExecutor {
         }
     }
 
-    @SneakyThrows
     private void saveSourceCodeToFile(String filePath, String sourceCode) {
-        try (PrintWriter writer = new PrintWriter(filePath, StandardCharsets.UTF_8)) {
+        try (PrintWriter writer = new PrintWriter(filePath, "UTF-8")) {
             writer.println(sourceCode);
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            throw new RuntimeException("Error saving source code to file: " + e.getMessage(), e);
         }
-    }
-
-    @Data
-    static class ClassProperty{
-        /**
-         * 类名
-         */
-        private String className;
-        /**
-         * 实例
-         */
-        private Object instance;
-        /**
-         * 方法列表
-         */
-        private List<MethodProperty> methodPropertyList;
-    }
-
-    @Data
-    static class MethodProperty{
-        /**
-         * 方法名
-         */
-        private String methodName;
-        /**
-         * code
-         */
-        private String sourceCode;
     }
 }
