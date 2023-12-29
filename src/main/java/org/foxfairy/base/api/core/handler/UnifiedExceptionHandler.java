@@ -30,6 +30,10 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+/**
+ * 自定义业务异常处理类
+ */
+
 @Slf4j
 @Component
 @ControllerAdvice

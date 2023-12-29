@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * 返回内容统一封装
+ * @param <T>
+ */
 @Getter
 public class HttpResponse<T> {
 

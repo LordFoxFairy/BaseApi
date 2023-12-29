@@ -1,39 +1,48 @@
-package org.foxfairy.base.api.core.module;
+package org.foxfairy.base.api.core.module;//package org.foxfairy.base.api.core.module;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.foxfairy.base.api.core.entity.ClassProperty;
 import org.springframework.stereotype.Component;
 
-import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * 动态执行类
+ * 1. 获取类
+ * 2. 编译类
+ * 3. 生成类实例
+ */
 @Slf4j
 @Component
 public class DynamicCodeExecutor {
 
-    private final ConcurrentMap<String, ClassProperty> compiledClasses = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ClassProperty> classPropertyConcurrentHashMap = new ConcurrentHashMap<>();
 
     @Resource
     private CodeChecker codeChecker;
 
     public synchronized void execute(String className, String methodName, String code) {
 
-        String sourceCode = generateSourceCode(className, methodName, code);
+        String sourceCode = generateSourceCode(code);
+//        String sourceCode = generateSourceCode(className, methodName, code);
+
+
+
         if(!codeChecker.isCodeSafe(sourceCode)){
             return ;
         }
 
         String hashCode = codeChecker.generateHash(sourceCode);
-        ClassProperty classProperty = compiledClasses.get(className);
+        ClassProperty classProperty = classPropertyConcurrentHashMap.get(className);
 
         Object instance;
         if(Objects.nonNull(classProperty) && hashCode.equals(classProperty.getHashCode()) && Objects.nonNull(classProperty.getInstance())){
@@ -50,16 +59,16 @@ public class DynamicCodeExecutor {
                 newClassProperty.setClassName(className);
                 newClassProperty.setHashCode(hashCode);
                 newClassProperty.setInstance(instance);
-                compiledClasses.put(className, newClassProperty);
+                classPropertyConcurrentHashMap.put(className, newClassProperty);
 
                 invokeMethod(instance, methodName);
             } catch (Exception e) {
                 throw new RuntimeException("Error creating instance or invoking method: " + e.getMessage(), e);
             }
         }
-        Class<?> clazz = compiledClasses.get(className).getClazz();
-        String classPath = clazz
-                .getResource(clazz.getSimpleName() + ".class")
+        Class<?> clazz = classPropertyConcurrentHashMap.get(className).getClazz();
+        String classPath = Objects.requireNonNull(clazz
+                        .getResource(clazz.getSimpleName() + ".class"))
                 .getPath().replaceAll("/" + clazz.getSimpleName() + ".class$", "")
                 .replaceAll("^file:", "").replaceAll("%20", " ");
         log.info("当前class的全局类路径：{}", classPath);
@@ -74,9 +83,20 @@ public class DynamicCodeExecutor {
                 "}\n";
     }
 
+
+    private String generateSourceCode(String className, String code) {
+
+        return "public class " + className + " {\n" +
+                code +
+                "}\n";
+    }
+
+    private String generateSourceCode(String code) {
+        return code;
+    }
+
     private Class<?> compileAndLoadClass(String className, String sourceCode) {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 
         // 保存源代码到临时文件
         String fileName = className + ".java";
@@ -109,9 +129,9 @@ public class DynamicCodeExecutor {
     }
 
     private void saveSourceCodeToFile(String filePath, String sourceCode) {
-        try (PrintWriter writer = new PrintWriter(filePath, "UTF-8")) {
+        try (PrintWriter writer = new PrintWriter(filePath, StandardCharsets.UTF_8)) {
             writer.println(sourceCode);
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+        } catch (IOException e) {
             throw new RuntimeException("Error saving source code to file: " + e.getMessage(), e);
         }
     }

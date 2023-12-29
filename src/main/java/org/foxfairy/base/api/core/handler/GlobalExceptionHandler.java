@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.rmi.ServerException;
 
+/**
+ * 异常处理类
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {

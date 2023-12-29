@@ -9,6 +9,9 @@ import org.foxfairy.base.api.core.annotations.Loggable;
 import org.foxfairy.base.api.core.module.SpelExpressionResolver;
 import org.springframework.stereotype.Component;
 
+/**
+ * 日志处理类
+ */
 @Slf4j
 @Aspect
 @Component
