@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.foxfairy.base.api.core.exceptions.BusinessExceptionAssert;
 
+/**
+ * 对应错误码和错误内容
+ */
 @Getter
 @AllArgsConstructor
 public enum ResponseEnum implements BusinessExceptionAssert {

@@ -10,10 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.tools.JavaCompiler;
-import javax.tools.SimpleJavaFileObject;
-import javax.tools.ToolProvider;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,17 +118,30 @@ class BaseApiApplicationTests {
     void testExecuteMethod() {
         String className = "TestClass";
         String methodName1 = "testMethod1";
-        String code1 = "System.out.println(\"Hello from testMethod1\");";
+        String code1 = """ 
+                package test;
+                public class TestClass{
+                    public void testMethod1(){
+                         System.out.println("hello world!!!");
+                    }
+                }
+                """;
+        String className2 = "TestClass2";
+        String methodName2 = "testMethod2";
+        String code2 = """ 
+                package test;
+                public class TestClass2{
+                    public void testMethod2(){
+                        new TestClass().testMethod1();
+                    }
+                }
+                """;
 
-//        String className2 = "TestClass2";
-//        String methodName2 = "testMethod2";
-//        String code2 = "new TestClass().testMethod1();";
+        String packageName = "test";
 
         dynamicCodeExecutor.execute(className, methodName1, code1);
-        dynamicCodeExecutor.execute(className, methodName1, code1);
-        dynamicCodeExecutor.execute(className, methodName1, code1);
-        dynamicCodeExecutor.execute(className, methodName1, code1);
-//        dynamicCodeExecutor.execute(className2, methodName2, code2);
+        dynamicCodeExecutor.execute(className2, methodName2, code2);
+
     }
 
 }

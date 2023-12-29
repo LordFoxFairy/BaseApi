@@ -8,10 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * 代码检查工具
+ */
 @Component
 public class CodeChecker {
-    private List<Pattern> whitelistPackages;
-    private List<Pattern> blacklistPackages;
+    private final List<Pattern> whitelistPackages;
+    private final List<Pattern> blacklistPackages;
 
     public CodeChecker() {
         whitelistPackages = new ArrayList<>();
@@ -22,6 +25,11 @@ public class CodeChecker {
         addBlacklistPackage("java.nio.*");
     }
 
+    /**
+     * 生成对应源代码的唯一编码
+     * @param sourceCode 源代码内容
+     * @return 唯一编码
+     */
     public String generateHash(String sourceCode) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -46,6 +54,11 @@ public class CodeChecker {
         blacklistPackages.add(Pattern.compile(packageName));
     }
 
+    /**
+     * 用于检测源代码是否是安全的
+     * @param code 源代码
+     * @return 返回True或False
+     */
     public boolean isCodeSafe(String code) {
         String[] lines = code.split("\n");
 
