@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication
-@MapperScan("org.foxfairy.base.api.mapper")
 public class BaseApiApplication {
 
     public static void main(String[] args) {
