@@ -57,11 +57,15 @@ public class HttpResponse<T> {
         return HttpResponse.template(HttpStatus.OK, data, message);
     }
 
-    public static <T> HttpResponse<T> template(HttpStatus status, T data) {
+    private static <T> HttpResponse<T> custom(Integer code, T data, String message) {
+        return HttpResponse.template(HttpStatus.valueOf(code), data, message);
+    }
+
+    private static <T> HttpResponse<T> template(HttpStatus status, T data) {
         return new HttpResponse<>(status, status.getReasonPhrase(), data);
     }
 
-    public static <T> HttpResponse<T> template(HttpStatus status, T data, String message) {
+    private static <T> HttpResponse<T> template(HttpStatus status, T data, String message) {
         return new HttpResponse<>(status, message, data);
     }
 
