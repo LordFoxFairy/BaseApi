@@ -1,4 +1,4 @@
-package org.foxfairy.base.api.util;
+package org.foxfairy.base.api.core.util;
 
 import lombok.experimental.UtilityClass;
 
