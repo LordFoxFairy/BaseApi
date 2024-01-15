@@ -2,18 +2,16 @@ package org.foxfairy.base.api;
 
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
-import org.foxfairy.base.api.core.module.DynamicCodeExecutor;
-import org.foxfairy.base.api.core.module.DynamicDataSource;
-import org.foxfairy.base.api.core.module.MyBatisSqlConverter;
-import org.foxfairy.base.api.core.module.SqlExecutor;
+import org.foxfairy.base.api.core.module.complie.DynamicCode;
+import org.foxfairy.base.api.core.module.complie.DynamicCodeExecutor;
+import org.foxfairy.base.api.core.module.datasource.DynamicDataSource;
+import org.foxfairy.base.api.core.module.sql.MyBatisSqlConverter;
+import org.foxfairy.base.api.core.module.sql.SqlExecutor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.tools.JavaCompiler;
-import javax.tools.SimpleJavaFileObject;
-import javax.tools.ToolProvider;
-import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,13 +120,58 @@ class BaseApiApplicationTests {
     void testExecuteMethod() {
         String className = "TestClass";
         String methodName1 = "testMethod1";
-        String code1 = "System.out.println(\"Hello from testMethod1\");";
-
+        String code1 = """ 
+                public class TestClass{
+                    public void testMethod1(){
+                         System.out.println("hello world!!!");
+                    }
+                }
+                """;
+        String className2 = "TestClass2";
         String methodName2 = "testMethod2";
-        String code2 = "System.out.println(\"Hello from testMethod2\");";
+        String code2 = """
+                public class TestClass2{
+                    public void testMethod2(){
+                        new org.foxfairy.base.api.temp.TestClass().testMethod1();
+                    }
+                }
+                """;
 
-//        dynamicCodeExecutor.execute(className, methodName1, code1);
-        dynamicCodeExecutor.execute(className, methodName2, code2);
+        dynamicCodeExecutor.execute(className, methodName1, code1);
+        dynamicCodeExecutor.execute(className2, methodName2, code2);
+
+    }
+
+    @Test
+    void dynamicCode(){
+        Class<?> testClass = DynamicCode.classBuilder()
+                .className("Test")
+                .then()
+                .methodBuilder()
+                .methodName("test")
+//                .returnType("java.lang.Integer")
+                .methodBody("{System.out.println(\"I am Test\");}")
+                .then()
+                .clazz();
+
+        Class<?> demoClass = DynamicCode.classBuilder()
+                .className("Demo")
+                .then()
+                .methodBuilder()
+                .methodName("demo")
+//                .returnType("java.lang.Integer")
+                .methodBody("{new org.foxfairy.base.api.temp.Test().test();}")
+                .then()
+                .clazz();
+
+        Object demoInstance;
+        try {
+            demoInstance = demoClass.getConstructor().newInstance();
+            demoClass.getMethod("demo").invoke(demoInstance);
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

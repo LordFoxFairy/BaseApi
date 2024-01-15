@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * 返回内容统一封装
+ * @param <T>
+ */
 @Getter
 public class HttpResponse<T> {
 
@@ -53,11 +57,15 @@ public class HttpResponse<T> {
         return HttpResponse.template(HttpStatus.OK, data, message);
     }
 
-    public static <T> HttpResponse<T> template(HttpStatus status, T data) {
+    private static <T> HttpResponse<T> custom(Integer code, T data, String message) {
+        return HttpResponse.template(HttpStatus.valueOf(code), data, message);
+    }
+
+    private static <T> HttpResponse<T> template(HttpStatus status, T data) {
         return new HttpResponse<>(status, status.getReasonPhrase(), data);
     }
 
-    public static <T> HttpResponse<T> template(HttpStatus status, T data, String message) {
+    private static <T> HttpResponse<T> template(HttpStatus status, T data, String message) {
         return new HttpResponse<>(status, message, data);
     }
 
@@ -66,7 +74,7 @@ public class HttpResponse<T> {
     }
 
     public static <T> HttpResponse<T> error(Integer code, String message) {
-        return new HttpResponse<>(null, message, null, code);
+        return new HttpResponse<>(HttpStatus.valueOf(code), message, null, code);
     }
 
     public static <T> HttpResponse<T> error404(String message) {

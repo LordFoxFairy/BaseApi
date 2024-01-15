@@ -5,12 +5,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.foxfairy.base.api.core.common.HttpResponse;
 import org.foxfairy.base.api.core.common.ResponseEnum;
-import org.foxfairy.base.api.core.exceptions.BaseException;
+import org.foxfairy.base.api.core.exception.BaseException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.rmi.ServerException;
 
+/**
+ * 异常处理类
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {

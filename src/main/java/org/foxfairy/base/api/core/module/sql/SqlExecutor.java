@@ -1,10 +1,11 @@
-package org.foxfairy.base.api.core.module;
+package org.foxfairy.base.api.core.module.sql;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.foxfairy.base.api.core.annotations.Loggable;
+import org.foxfairy.base.api.core.annotation.Loggable;
+import org.foxfairy.base.api.core.module.datasource.DynamicDataSource;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -28,7 +29,6 @@ public class SqlExecutor {
     private DynamicDataSource dynamicDataSource;
     @Resource
     MyBatisSqlConverter myBatisSqlConverter;
-
     @Loggable("#key + ' ' + #sql + ' ' + #params")
     public String executeQuery(String key, String sql, Map<String, Object> params) throws SQLException{
         String formatSql = myBatisSqlConverter.conversionSql(sql, params);
