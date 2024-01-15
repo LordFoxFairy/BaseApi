@@ -2,7 +2,11 @@ package org.foxfairy.base.api;
 
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
-import org.foxfairy.base.api.core.module.*;
+import org.foxfairy.base.api.core.module.complie.DynamicCode;
+import org.foxfairy.base.api.core.module.complie.DynamicCodeExecutor;
+import org.foxfairy.base.api.core.module.datasource.DynamicDataSource;
+import org.foxfairy.base.api.core.module.sql.MyBatisSqlConverter;
+import org.foxfairy.base.api.core.module.sql.SqlExecutor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -117,7 +121,6 @@ class BaseApiApplicationTests {
         String className = "TestClass";
         String methodName1 = "testMethod1";
         String code1 = """ 
-                package test;
                 public class TestClass{
                     public void testMethod1(){
                          System.out.println("hello world!!!");
@@ -126,16 +129,13 @@ class BaseApiApplicationTests {
                 """;
         String className2 = "TestClass2";
         String methodName2 = "testMethod2";
-        String code2 = """ 
-                package test;
+        String code2 = """
                 public class TestClass2{
                     public void testMethod2(){
-                        new TestClass().testMethod1();
+                        new org.foxfairy.base.api.temp.TestClass().testMethod1();
                     }
                 }
                 """;
-
-        String packageName = "test";
 
         dynamicCodeExecutor.execute(className, methodName1, code1);
         dynamicCodeExecutor.execute(className2, methodName2, code2);
