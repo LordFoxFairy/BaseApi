@@ -1,4 +1,4 @@
-package org.foxfairy.base.api.core.module;
+package org.foxfairy.base.api.core.module.complie;
 
 import org.springframework.stereotype.Component;
 

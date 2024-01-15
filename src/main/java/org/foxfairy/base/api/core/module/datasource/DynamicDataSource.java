@@ -1,4 +1,4 @@
-package org.foxfairy.base.api.core.module;
+package org.foxfairy.base.api.core.module.datasource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.foxfairy.base.api.core.annotations.Loggable;
+import org.foxfairy.base.api.core.annotation.Loggable;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;

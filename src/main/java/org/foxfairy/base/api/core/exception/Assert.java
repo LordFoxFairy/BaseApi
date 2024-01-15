@@ -1,4 +1,4 @@
-package org.foxfairy.base.api.core.exceptions;
+package org.foxfairy.base.api.core.exception;
 
 public interface Assert {
     /**

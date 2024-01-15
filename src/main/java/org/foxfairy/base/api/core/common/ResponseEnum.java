@@ -2,7 +2,7 @@ package org.foxfairy.base.api.core.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.foxfairy.base.api.core.exceptions.BusinessExceptionAssert;
+import org.foxfairy.base.api.core.exception.BusinessExceptionAssert;
 
 /**
  * 对应错误码和错误内容

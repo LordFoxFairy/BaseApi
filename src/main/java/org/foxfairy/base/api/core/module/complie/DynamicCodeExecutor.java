@@ -1,4 +1,4 @@
-package org.foxfairy.base.api.core.module;//package org.foxfairy.base.api.core.module;
+package org.foxfairy.base.api.core.module.complie;//package org.foxfairy.base.api.core.module;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
