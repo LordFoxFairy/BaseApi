@@ -74,7 +74,7 @@ public class HttpResponse<T> {
     }
 
     public static <T> HttpResponse<T> error(Integer code, String message) {
-        return new HttpResponse<>(null, message, null, code);
+        return new HttpResponse<>(HttpStatus.valueOf(code), message, null, code);
     }
 
     public static <T> HttpResponse<T> error404(String message) {

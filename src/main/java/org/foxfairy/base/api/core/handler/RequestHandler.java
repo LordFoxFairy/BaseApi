@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.foxfairy.base.api.core.common.HttpResponse;
-import org.foxfairy.base.api.core.module.SqlExecutor;
+import org.foxfairy.base.api.core.module.sql.SqlExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;

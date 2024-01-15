@@ -1,4 +1,4 @@
-package org.foxfairy.base.api.core.module;
+package org.foxfairy.base.api.core.module.sql;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

@@ -1,4 +1,4 @@
-package org.foxfairy.base.api.core.annotations;
+package org.foxfairy.base.api.core.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

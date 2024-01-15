@@ -1,4 +1,4 @@
-package org.foxfairy.base.api.core.exceptions;
+package org.foxfairy.base.api.core.exception;
 
 import org.foxfairy.base.api.core.common.IResponseEnum;
 import java.io.Serial;
